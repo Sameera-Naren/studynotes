@@ -1,0 +1,81 @@
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { User } from '@supabase/supabase-js';
+import { BookOpen, Upload, LogOut, UserCircle } from 'lucide-react';
+import { supabase } from '../lib/supabase';
+
+interface NavbarProps {
+  user: User | null;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ user }) => {
+  const location = useLocation();
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
+  return (
+    <nav className="bg-white shadow-lg">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          <div className="flex items-center">
+            <Link to="/" className="flex items-center">
+              <BookOpen className="h-8 w-8 text-blue-500" />
+              <span className="ml-2 text-xl font-bold text-gray-800">StudyNotes</span>
+            </Link>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            {user ? (
+              <>
+                <Link
+                  to="/notes"
+                  className={`flex items-center px-4 py-2 rounded-md text-gray-600 hover:text-blue-500 ${
+                    location.pathname === '/notes' ? 'text-blue-500' : ''
+                  }`}
+                >
+                  <BookOpen className="h-5 w-5 mr-1" />
+                  Notes
+                </Link>
+                <Link
+                  to="/upload"
+                  className={`flex items-center px-4 py-2 rounded-md text-gray-600 hover:text-blue-500 ${
+                    location.pathname === '/upload' ? 'text-blue-500' : ''
+                  }`}
+                >
+                  <Upload className="h-5 w-5 mr-1" />
+                  Upload
+                </Link>
+                <Link
+                  to="/dashboard"
+                  className={`flex items-center px-4 py-2 rounded-md text-gray-600 hover:text-blue-500 ${
+                    location.pathname === '/dashboard' ? 'text-blue-500' : ''
+                  }`}
+                >
+                  <UserCircle className="h-5 w-5 mr-1" />
+                  Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center px-4 py-2 rounded-md text-gray-600 hover:text-red-500"
+                >
+                  <LogOut className="h-5 w-5 mr-1" />
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/login"
+                className="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600"
+              >
+                Login
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;
